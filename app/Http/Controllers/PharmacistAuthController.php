@@ -80,7 +80,7 @@ class PharmacistAuthController extends Controller
             'status' => 200,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60,
+            'expires_in' => Auth::factory()->getTTL() * 3600,
             'pharmacist' => auth()->guard('pharmacist')->user()
         ],200);
     }

@@ -22,7 +22,7 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::controller(AdminAuthController::class)->prefix('admin')->group(function () {
         Route::post('/login', 'login');
-        Route::post('/register','register',);
+        Route::post('/register','register');
         Route::post('/logout', 'logout');
         Route::post('/refresh','refresh');
     });
@@ -37,7 +37,7 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::controller(PharmacistAuthController::class)->prefix('pharmacist')->group(function () {
         Route::post('/login', 'login');
-        Route::post('/register', 'register');;
+        Route::post('/register', 'register');
         Route::post('/logout', 'logout');
         Route::post('/refresh','refresh');
         Route::get('/verification/{code}','verify');
@@ -124,7 +124,9 @@ Route::controller(WarehouseReviewController::class)->group(function (){
         Route::post('pharmacist/review/store','store')->middleware('auth:pharmacist');
     });
 
-Route::controller(AdminController::class)->prefix('admin')->group(function (){
+Route::controller(AdminController::class)->prefix('admin')
+    ->middleware('auth:admin')
+    ->group(function (){
     Route::post('delete_warehouse/{id}','deleteWarehouse');
     Route::post('accepted_warehouse/{id}','acceptedWarehouse');
 });

@@ -23,7 +23,7 @@ trait DatawithMedicineTrait
 
     public function showWithMedicines()
     {
-        $medicines = $this->model->with('medicines')->get();
+        $medicines = $this->model->with('medicines.warehouse:id,name','medicines.category')->get(['id','name']);
 
         return response()->json([
             'status' => 200,
