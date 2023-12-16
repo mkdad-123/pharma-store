@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChangeOrderStatusEvent;
 use App\Http\Requests\OrderStatusRequest;
 use App\Http\Requests\PaymentStatusRequest;
 use App\Models\Order;
@@ -20,7 +21,7 @@ class OrderStatusController extends Controller
 
             $order->setAttribute('status',$request->status)->save();
 
-            // Notification()
+            event(new ChangeOrderStatusEvent($order['status'],$order['pharmacist_id']));
 
             DB::commit();
 

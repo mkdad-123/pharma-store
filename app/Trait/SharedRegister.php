@@ -2,7 +2,9 @@
 
 namespace App\Trait;
 
+use App\Events\WarehouseRegisterEvent;
 use App\Mail\SendEmailVerification;
+use App\Models\Warehouse;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -70,6 +72,11 @@ Trait SharedRegister
         Mail::to($user->email)->send(new SendEmailVerification($user));
     }
 
+    protected function sendNotificationAdmin($user): void
+    {
+        event(new WarehouseRegisterEvent($user));
+    }
+
     public function register($request)
     {
         try {
@@ -82,7 +89,12 @@ Trait SharedRegister
 
             $user = $this->generateCode($email);
 
-             $this->sendEmail($user);
+            $this->sendEmail($user);
+
+            if($this->model instanceof Warehouse)
+            {
+                $this->sendNotificationAdmin($user);
+            }
 
             DB::commit();
 

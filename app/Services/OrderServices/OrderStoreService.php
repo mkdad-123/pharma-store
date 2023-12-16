@@ -2,10 +2,12 @@
 
 namespace App\Services\OrderServices;
 
+use App\Events\NewOrderEvent;
 use App\Models\Medicine;
 use App\Models\Order;
 use App\Models\OrderMedicine;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class OrderStoreService
@@ -44,10 +46,16 @@ class OrderStoreService
         }
     }
 
-    protected function sendNotificationOrder(): void
-    {}
+    protected function sendNotificationOrder($orderId,$warehouseId): void
+    {
+        $order = Order::with(['orderMedicines','pharmacist:id,name'])
+            ->whereId($orderId)
+            ->get(['id','status','payment']);
 
-    public function store($request): \Illuminate\Http\JsonResponse
+        event(new NewOrderEvent($order,$warehouseId));
+    }
+
+    public function store($request): JsonResponse
     {
         try {
             DB::beginTransaction();
@@ -58,7 +66,7 @@ class OrderStoreService
 
             $this->deductionQuantity($medicines);
 
-            //$this->sendNotificationOrder();
+            $this->sendNotificationOrder($orderId,$request->input('warehouse_id'));
 
             DB::commit();
 

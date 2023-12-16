@@ -1,18 +1,20 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 
-/*
-|--------------------------------------------------------------------------
-| Broadcast Channels
-|--------------------------------------------------------------------------
-|
-| Here you may register all of the event broadcasting channels that your
-| application supports. The given channel authorization callbacks are
-| used to check if an authenticated user can listen to the channel.
-|
-*/
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('private-orders.{warehouse_id}',function ($warehouse){
+
+    return (int) $warehouse->id === (int) auth()->guard('warehouse')->id();
+});
+
+Broadcast::channel('private-order-status.{pharmacist_id}',function ($pharmacist){
+
+    return (int) $pharmacist->id === (int) auth()->guard('pharmacist')->id();
+});
+
+Broadcast::channel('warehouse-register',function ($admin){
+
+    return (Auth::guard('admin')->check());
 });
