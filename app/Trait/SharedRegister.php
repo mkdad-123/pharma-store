@@ -3,7 +3,7 @@
 namespace App\Trait;
 
 use App\Events\WarehouseRegisterEvent;
-use App\Mail\SendEmailVerification;
+use App\Mail\ResetPasswordEmail;
 use App\Models\Warehouse;
 use Carbon\Carbon;
 use Exception;
@@ -69,7 +69,7 @@ Trait SharedRegister
     }
     protected function sendEmail($user): void
     {
-        Mail::to($user->email)->send(new SendEmailVerification($user));
+        Mail::to($user->email)->send(new ResetPasswordEmail($user));
     }
 
     protected function sendNotificationAdmin($user): void

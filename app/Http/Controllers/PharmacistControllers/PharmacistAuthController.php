@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\PharmacistControllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PharmacistRegisterRequest;
 use App\Models\Pharmacist;
 use App\Services\PharmasictService\ParmasictRegisterService;
@@ -67,21 +68,16 @@ class PharmacistAuthController extends Controller
         return $this->createNewToken(auth()->guard('pharmacist')->refresh());
     }
 
-    public function userProfile() {
-        return response()->json([
-            'pharmacist' => auth()->guard('pharmacist')->user(),
-            'status' => 200,
-        ],200);
-    }
-
     protected function createNewToken($token){
+
+        Auth::factory()->setTTL(360);
 
         return response()->json([
             'status' => 200,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 3600,
-            'pharmacist' => auth()->guard('pharmacist')->user()
+            'expires_in' => Auth::factory()->getTTL() * 60,
+            'pharmacist' => auth()->guard('pharmacist')->user(),
         ],200);
     }
 }

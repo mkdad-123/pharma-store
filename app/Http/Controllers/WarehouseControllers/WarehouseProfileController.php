@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\WarehouseControllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\WarehouseRegisterRequest;
 use App\Interfaces\CrudProfileInterface;
 

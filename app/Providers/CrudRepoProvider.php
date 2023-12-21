@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\PharmacistOrderController;
-use App\Http\Controllers\WarehouseOrderController;
+use App\Http\Controllers\PharmacistControllers\PharmacistOrderController;
+use App\Http\Controllers\WarehouseControllers\WarehouseOrderController;
 use App\Interfaces\CrudRepoInterface;
 use App\Repo\PharmacistOrderRepo;
 use App\Repo\WarehouseOrderRepo;

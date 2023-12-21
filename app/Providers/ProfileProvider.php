@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\AdminProfileController;
-use App\Http\Controllers\PharmacistProfileController;
-use App\Http\Controllers\WarehouseProfileController;
+use App\Http\Controllers\AdminControllers\AdminProfileController;
+use App\Http\Controllers\PharmacistControllers\PharmacistProfileController;
+use App\Http\Controllers\WarehouseControllers\WarehouseProfileController;
 use App\Interfaces\CrudProfileInterface;
 use App\Repo\ProfileRepo\AdminProfileRepo;
 use App\Repo\ProfileRepo\PharmacistProfileRepo;

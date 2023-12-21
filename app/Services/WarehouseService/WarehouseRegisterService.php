@@ -14,6 +14,4 @@ class WarehouseRegisterService
         $this->setModel(new Warehouse());
     }
 
-
-
 }

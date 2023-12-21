@@ -1,5 +1,6 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\AdminControllers;
+use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,10 +51,6 @@ class AdminAuthController extends Controller
 
     public function refresh() {
         return $this->createNewToken(auth()->guard('admin')->refresh());
-    }
-
-    public function userProfile() {
-        return response()->json(['admin' => auth()->guard('admin')->user()],200);
     }
 
     protected function createNewToken($token){

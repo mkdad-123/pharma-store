@@ -55,18 +55,13 @@ class WarehouseLoginService
        return $warehouse->verified;
     }
 
-    protected function createNewToken($token){
+    public function createNewToken($token){
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 3600,
+            'expires_in' => Auth::factory()->getTTL() * 60,
             'warehouse' => auth()->guard('warehouse')->user()
         ],200);
-    }
-
-    protected function sendNotificationAdmin()
-    {
-
     }
 
     public function login($request)

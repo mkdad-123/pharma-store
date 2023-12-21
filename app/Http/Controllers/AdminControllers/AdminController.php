@@ -1,8 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\AdminControllers;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
+use App\Models\Category;
+use App\Models\Company;
 use App\Models\Warehouse;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -22,6 +27,17 @@ class AdminController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'the warehouse has been deleted',
+        ]);
+    }
+
+    public function addCompany(CategoryRequest $request)
+    {
+
+        Company::create(['name' => $request->input('name')]);
+
+        return response()->json([
+            'status' => 201,
+            'message' => 'Company has been created successfully',
         ]);
     }
 }

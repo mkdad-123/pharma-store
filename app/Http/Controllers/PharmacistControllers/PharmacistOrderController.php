@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\PharmacistControllers;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderMedicineRequest;
 use App\Interfaces\CrudRepoInterface;
 
-class WarehouseOrderController extends Controller
+class PharmacistOrderController extends Controller
 {
     protected CrudRepoInterface $crudRepo;
 
@@ -22,4 +24,10 @@ class WarehouseOrderController extends Controller
     {
         return $this->crudRepo->showOne($id);
     }
+
+    public function addOrder(OrderMedicineRequest $request)
+    {
+        return $this->crudRepo->store($request);
+    }
+
 }

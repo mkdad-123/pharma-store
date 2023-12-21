@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\WarehouseReviewRequest;
 use App\Http\Resources\WarehouseReviewResource;
 use App\Models\WarehouseReview;
-use Mockery\Exception;
+use Exception;
 
 class WarehouseReviewController extends Controller
 {

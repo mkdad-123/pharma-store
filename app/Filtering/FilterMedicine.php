@@ -11,11 +11,15 @@ class FilterMedicine
     {
         return [
             AllowedFilter::callback('item', function (Builder $query, $value) {
-                $query->whereHas('category',function (Builder $query) use ($value){
-                    $query->where('name' , 'like' , "%{$value}%");
-                })->orWhereHas('warehouse' , function (Builder $query) use ($value){
-                    $query->where('name','like',"%{$value}%");
-                });
+
+                $query->where('commercial_name' , 'like' , "%{$value}%");
+
+//                $query->whereHas('category',function (Builder $query) use ($value){
+//                    $query->where('name' , 'like' , "%{$value}%");
+//
+//                })->orWhereHas('warehouse' , function (Builder $query) use ($value){
+//                    $query->where('name','like',"%{$value}%");
+//                });
             })
         ];
     }

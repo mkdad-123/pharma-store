@@ -1,19 +1,20 @@
 <?php
 
-use App\Http\Controllers\{AdminAuthController,
-    AdminController,
-    AdminProfileController,
+use App\Http\Controllers\{AdminControllers\AdminAuthController,
+    AdminControllers\AdminController,
+    AdminControllers\AdminProfileController,
     CategoryController,
+    CompanyController,
     FavoriteController,
     MedicineController,
     OrderStatusController,
-    PharmacistOrderController,
-    PharmacistProfileController,
-    WarehouseAuthController,
-    PharmacistAuthController,
-    WarehouseController,
-    WarehouseOrderController,
-    WarehouseProfileController,
+    PharmacistControllers\PharmacistAuthController,
+    PharmacistControllers\PharmacistOrderController,
+    PharmacistControllers\PharmacistProfileController,
+    WarehouseControllers\WarehouseAuthController,
+    WarehouseControllers\WarehouseController,
+    WarehouseControllers\WarehouseOrderController,
+    WarehouseControllers\WarehouseProfileController,
     WarehouseReviewController};
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,8 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/logout', 'logout');
         Route::post('/refresh','refresh');
         Route::get('/verification/{code}','verify');
+        Route::post('/resetPassword','resetPassword');
+        Route::get('/check_code/{code}','checkCodeResetPassword');
     });
 
     Route::controller(PharmacistAuthController::class)->prefix('pharmacist')->group(function () {
@@ -44,6 +47,12 @@ Route::group(['prefix' => 'auth'], function () {
     });
 
 });
+
+Route::get('/unauthorized', function (){
+    return response()->json([
+        'message' => 'unauthorized'
+    ],401);
+})->name('login');
 
 Route::group(['prefix' => 'profile'], function () {
 
@@ -69,11 +78,6 @@ Route::group(['prefix' => 'profile'], function () {
         });
 });
 
-Route::get('/unauthorized', function (){
-    return response()->json([
-        'message' => 'unauthorized'
-    ],401);
-})->name('login');
 
 Route::controller(MedicineController::class)->prefix('medicine')->group(function (){
     Route::get('show_all','showAll');
@@ -86,7 +90,18 @@ Route::controller(MedicineController::class)->prefix('medicine')->group(function
 
 Route::controller(CategoryController::class)->prefix('categories')->group(function (){
    Route::get('show_all','show');
-    Route::get('show_medicines','showWithMedicines');
+   Route::get('show_medicines','showWithMedicines');
+   Route::middleware('auth:admin')->group(function (){
+       Route::post('delete/{id}', 'delete');
+       Route::post('add' , 'add');
+       Route::post('update/{id}' , 'update');
+   });
+});
+Route::controller(CompanyController::class)->prefix('companies')
+    ->middleware('auth:admin')->group(function (){
+    Route::post('delete/{id}', 'delete');
+    Route::post('add' , 'add');
+    Route::post('update/{id}' , 'update');
 });
 
 Route::controller(WarehouseController::class)->prefix('warehouses')->group(function (){
@@ -129,6 +144,7 @@ Route::controller(AdminController::class)->prefix('admin')
     ->group(function (){
     Route::post('delete_warehouse/{id}','deleteWarehouse');
     Route::post('accepted_warehouse/{id}','acceptedWarehouse');
+    Route::post('store_company','addCompany');
 });
 
 

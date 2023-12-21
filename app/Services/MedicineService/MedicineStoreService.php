@@ -28,7 +28,10 @@ class MedicineStoreService
         $category =  Category::whereName($categoryName)->first();
 
         if(! $category){
-            $category = Category::create(['name' =>$categoryName]);
+            return response()->json([
+                'status' => 400,
+                'message' => 'Category is not found'
+            ]);
         }
         return $category->id;
     }
@@ -43,27 +46,25 @@ class MedicineStoreService
         return $company->id;
     }
 
-    protected function storePhotoMedicine($request)
+    protected function storeMedicine($request,$categoryId ,$companyId): Medicine
     {
-        $photo = $request->file('photo')->store('medicines');
-        return $photo;
-    }
+        $medicine = $request->except('category','company','photo');
 
-    protected function storeMedicine($request,$categoryId ,$companyId,$photo): Medicine
-    {
-        $medicine = $request->except('category','company');
+        $photo = $request->file('photo')->getClientOriginalName();
+        $path = $request->file('photo')->storeAs('medicines',$photo,'MedicinePhoto');
 
         $medicine['category_id'] = $categoryId;
         $medicine['company_id'] = $companyId;
-        $medicine['photo'] = $photo;
         $medicine['price'] = $this->adminPercent($request->price);
         $medicine['warehouse_id'] = auth()->guard('warehouse')->id();
+        $medicine['photo'] = $path;
 
         $medicineStored = $this->model->create($medicine);
 
         return $medicineStored;
 
     }
+
 
     public function store($request)
     {
@@ -74,9 +75,7 @@ class MedicineStoreService
 
             $companyId = $this->storeCompany($request->company);
 
-            $photo = $this->storePhotoMedicine($request);
-
-            $medicine = $this->storeMedicine($request,$categoryId ,$companyId ,$photo);
+            $medicine = $this->storeMedicine($request,$categoryId ,$companyId);
 
             DB::commit();
 
