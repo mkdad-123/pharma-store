@@ -3,7 +3,7 @@
 namespace App\Trait;
 
 use App\Events\WarehouseRegisterEvent;
-use App\Mail\ResetPasswordEmail;
+use App\Mail\SendEmailVerification;
 use App\Models\Warehouse;
 use Carbon\Carbon;
 use Exception;
@@ -28,8 +28,9 @@ Trait SharedRegister
 
             return response()->json([
                 'status' => 422,
-                'error' => $validator->errors()->toJson(),
-            ],422);
+                'message' => $validator->errors()->toJson(),
+                'data'
+            ]);
         }
 
         return $validator->validated();
@@ -69,7 +70,7 @@ Trait SharedRegister
     }
     protected function sendEmail($user): void
     {
-        Mail::to($user->email)->send(new ResetPasswordEmail($user));
+        Mail::to($user->email)->send(new SendEmailVerification($user));
     }
 
     protected function sendNotificationAdmin($user): void
@@ -99,9 +100,10 @@ Trait SharedRegister
             DB::commit();
 
             return response()->json([
-                'status' => 201,
+                'status' => 200,
                 'message' => 'your account has been created , please check your email',
-            ], 201);
+                'data' => [],
+            ]);
 
         } catch (Exception $e) {
 

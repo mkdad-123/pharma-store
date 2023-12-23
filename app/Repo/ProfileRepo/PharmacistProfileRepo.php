@@ -23,7 +23,8 @@ class PharmacistProfileRepo implements CrudProfileInterface
 
         return  response()->json([
             'status' => 200,
-            'data' => $pharmacist
+            'message' => '',
+            'data' => $pharmacist,
         ]);
     }
 }

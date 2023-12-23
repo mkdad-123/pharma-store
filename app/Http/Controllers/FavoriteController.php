@@ -15,8 +15,9 @@ class FavoriteController extends Controller
         $favorite_medicine->save();
 
         return response()->json([
-            'status' => 201,
-           'message' => 'The medicine has been added to your favorites list'
+            'status' => 200,
+            'message' => 'The medicine has been added to your favorites list',
+            'data'=> [],
         ]);
 
     }
@@ -29,8 +30,9 @@ class FavoriteController extends Controller
         $favorite_medicine->save();
 
         return response()->json([
-            'status' => 201,
-            'message' => 'The warehouse has been added to your favorites list'
+            'status' => 200,
+            'message' => 'The warehouse has been added to your favorites list',
+            'data'=> [],
         ]);
     }
 
@@ -42,6 +44,7 @@ class FavoriteController extends Controller
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $favorites,
         ]);
     }
@@ -55,6 +58,7 @@ class FavoriteController extends Controller
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $favorites,
         ]);
     }
@@ -69,8 +73,9 @@ class FavoriteController extends Controller
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data'=> $topMedicines,
-        ],200);
+        ]);
     }
 
 }

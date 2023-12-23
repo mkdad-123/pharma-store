@@ -19,6 +19,7 @@ class PharmacistOrderRepo implements CrudRepoInterface
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $orders
         ]);
     }
@@ -29,6 +30,7 @@ class PharmacistOrderRepo implements CrudRepoInterface
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $order
         ]);
     }

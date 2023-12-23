@@ -23,6 +23,7 @@ class AdminProfileRepo implements CrudProfileInterface
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $admin
         ]);
     }

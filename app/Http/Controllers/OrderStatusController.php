@@ -27,12 +27,13 @@ class OrderStatusController extends Controller
 
             return response()->json([
                 'status' => 201,
-                'message' => 'The order status has changed '
+                'message' => 'The order status has changed ',
+                'data'=> [],
             ]);
 
         }catch (Exception $e){
             DB::rollBack();
-            return response()->json($e->getMessage());
+            return response($e->getMessage());
         }
 
     }
@@ -45,7 +46,8 @@ class OrderStatusController extends Controller
 
         return response()->json([
             'status' => 201,
-            'message' => 'The payment status has changed '
+            'message' => 'The payment status has changed ',
+            'data'=> [],
         ]);
     }
 

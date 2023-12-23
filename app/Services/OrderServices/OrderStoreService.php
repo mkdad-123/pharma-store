@@ -46,7 +46,7 @@ class OrderStoreService
         }
     }
 
-    protected function sendNotificationOrder($orderId,$warehouseId): void
+    protected function sendNotificationOrder($orderId,$warehouseId)
     {
         $order = Order::with(['orderMedicines','pharmacist:id,name'])
             ->whereId($orderId)
@@ -55,7 +55,7 @@ class OrderStoreService
         event(new NewOrderEvent($order,$warehouseId));
     }
 
-    public function store($request): JsonResponse
+    public function store($request)
     {
         try {
             DB::beginTransaction();
@@ -71,13 +71,14 @@ class OrderStoreService
             DB::commit();
 
             return response()->json([
-                'status' => 201,
-                'message' => 'Your order has been registered successfully'
-            ],201);
+                'status' => 200,
+                'message' => 'Your order has been registered successfully',
+                'data'=> [],
+            ]);
 
         }catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => $e->getMessage()]);
+            return response($e->getMessage());
         }
 
     }

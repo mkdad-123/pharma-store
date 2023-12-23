@@ -51,7 +51,7 @@ class MedicineStoreService
         $medicine = $request->except('category','company','photo');
 
         $photo = $request->file('photo')->getClientOriginalName();
-        $path = $request->file('photo')->storeAs('medicines',$photo,'MedicinePhoto');
+        $path = $request->file('photo')->storeAs('images',$photo,'public');
 
         $medicine['category_id'] = $categoryId;
         $medicine['company_id'] = $companyId;

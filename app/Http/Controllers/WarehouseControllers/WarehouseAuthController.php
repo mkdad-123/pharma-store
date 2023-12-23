@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class WarehouseAuthController extends Controller
 {
@@ -38,9 +39,13 @@ class WarehouseAuthController extends Controller
 
     public function logout() {
 
-        auth()->logout();
+        auth()->guard('warehouse')->logout();
 
-        return response()->json(['message' => 'User successfully signed out']);
+        return response()->json([
+            'status' => 200,
+            'message' => 'User successfully signed out',
+            'data'=> [],
+        ]);
     }
 
     public function refresh() {
@@ -54,33 +59,50 @@ class WarehouseAuthController extends Controller
             'email' => 'required|exists:warehouses'
         ]);
         if($validator->fails()){
-            return response()->json($validator->errors(),422);
+            return response()->json([
+                'status' => 400,
+                'message'=> $validator->errors(),
+                'data' => [],
+            ]);
         }
+        $this->emailUser = $request->email;
+
         return $this->forgetPassword($request);
     }
 
     public function checkCodeResetPassword($code)
     {
-        $data = ForgetPassword::whereCode($code)
-            ->where('expires_at','>',Carbon::now())->first();
-
-        if(! $data){
-            return response()->json([
-                'status' => 401,
-                'message' => 'the code is not correct'
-            ]);
-        }
-        $data->code = null;
-        $data->expires_at = null;
-        $data->save();
-        return response()->json([
-            'status' => 200,
-            'message' => 'the code is correct ,reset your password'
-        ]);
+        return $this->checkCode($code);
     }
 
     public function updatePassword(Request $request)
     {
+        $validator  = Validator::make($request->all(),[
+            'password' => ['required','confirmed',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()],
+            'email' => 'required|exists:warehouses'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'message'=> $validator->errors(),
+                'data' => [],
+            ]);
+        }
+        $warehouse = Warehouse::whereEmail($request->email)->first();
+
+        $warehouse->update([
+            'password' => bcrypt($request->password)
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'password has been updated successfully',
+            'data'=> [],
+        ]);
 
     }
 

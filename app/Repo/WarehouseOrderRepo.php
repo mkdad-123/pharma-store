@@ -21,6 +21,7 @@ class WarehouseOrderRepo implements CrudRepoInterface
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $orders
         ]);
     }
@@ -31,6 +32,7 @@ class WarehouseOrderRepo implements CrudRepoInterface
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $order
         ]);
     }

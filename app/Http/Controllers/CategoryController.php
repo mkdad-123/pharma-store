@@ -16,7 +16,4 @@ class CategoryController extends Controller
         $this->setModelCrud(new Category());
     }
 
-
-
-
 }

@@ -23,9 +23,10 @@ class WarehouseLoginService
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 422,
-                'error' => $validator->errors()
-                ], 200);
+                'status' => 400,
+                'message' => $validator->errors(),
+                'data' => [],
+                ]);
         }
 
         return $validator->validated();
@@ -36,8 +37,9 @@ class WarehouseLoginService
         if (! $token = auth()->guard('warehouse')->attempt($data)) {
             return response()->json([
                 'status' => 401,
-                'error' => 'Unauthorized',
-                ], 200);
+                'message' => 'Unauthorized',
+                'data' => []
+                ]);
         }
         return $token;
     }
@@ -57,11 +59,16 @@ class WarehouseLoginService
 
     public function createNewToken($token){
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60,
-            'warehouse' => auth()->guard('warehouse')->user()
-        ],200);
+            'status' => 200,
+            'message' => '',
+            'data' => [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => Auth::factory()->getTTL() * 60,
+                'warehouse' => auth()->guard('warehouse')->user()
+            ]
+
+        ]);
     }
 
     public function login($request)
@@ -76,12 +83,21 @@ class WarehouseLoginService
 
             if($this->isVerified($data['email']) == null){
 
-                return response()->json(['message' => 'Your account is not verified']);
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Your account is not verified',
+                    'data' => []
+                ]);
 
             }
             if (! ($this->isValidStatus($data['email'])) ) {
 
-                return response()->json(['message' => 'Your account is pending']);
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Your account is pending',
+                    'data' => []
+                ]);
+
             }
 
             DB::commit();

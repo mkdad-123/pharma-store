@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -17,6 +18,7 @@ class AdminController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'the status warehouse has been changed',
+            'data'=> [],
         ]);
     }
 
@@ -27,17 +29,28 @@ class AdminController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'the warehouse has been deleted',
+            'data'=> [],
         ]);
     }
 
-    public function addCompany(CategoryRequest $request)
+    public function addCompany(Request $request)
     {
-
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|unique:companies',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => 200,
+                'message' => $validator->errors(),
+                'data'=> [],
+            ]);
+        }
         Company::create(['name' => $request->input('name')]);
 
         return response()->json([
-            'status' => 201,
+            'status' => 200,
             'message' => 'Company has been created successfully',
+            'data'=> [],
         ]);
     }
 }

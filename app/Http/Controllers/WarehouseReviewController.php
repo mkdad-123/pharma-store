@@ -16,8 +16,9 @@ class WarehouseReviewController extends Controller
         $reviews = WarehouseReview::create($data);
 
         return response()->json([
-            'status' => 201,
-            'data' => $reviews
+            'status' => 200,
+            'message' => '',
+            'data' => $reviews,
         ]);
     }
 
@@ -30,8 +31,11 @@ class WarehouseReviewController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'total_rate' => $rateTotal,
-                'data' => WarehouseReviewResource::collection($reviews->get())
+                'message' => '',
+                'data' =>[
+                    'total_rate' => $rateTotal,
+                    'Reviewer'=>WarehouseReviewResource::collection($reviews->get())
+                ]
             ]);
 
         }catch (Exception $e){

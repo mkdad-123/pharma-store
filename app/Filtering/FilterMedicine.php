@@ -7,7 +7,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 class FilterMedicine
 {
-    public function filter(): array
+    public function filterNames(): array
     {
         return [
             AllowedFilter::callback('item', function (Builder $query, $value) {
@@ -23,4 +23,19 @@ class FilterMedicine
             })
         ];
     }
+
+    public function filterCategories(): array
+    {
+        return [
+            AllowedFilter::callback('item', function (Builder $query, $value) {
+
+                $query->whereHas('category',function (Builder $query) use ($value){
+                    $query->where('name' , 'like' , "%{$value}%");
+
+                });
+            })
+        ];
+
+    }
+
 }

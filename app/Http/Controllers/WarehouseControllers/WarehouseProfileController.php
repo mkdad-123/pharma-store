@@ -5,6 +5,7 @@ namespace App\Http\Controllers\WarehouseControllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WarehouseRegisterRequest;
 use App\Interfaces\CrudProfileInterface;
+use Illuminate\Http\Request;
 
 class WarehouseProfileController extends Controller
 {
@@ -20,7 +21,7 @@ class WarehouseProfileController extends Controller
         return $this->crudRepo->show();
     }
 
-    public function updateProfile(WarehouseRegisterRequest $request)
+    public function updateProfile(Request $request)
     {
         return $this->crudRepo->update($request);
     }

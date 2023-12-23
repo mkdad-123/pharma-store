@@ -19,8 +19,9 @@ trait CrudTrait
         $this->model->create(['name' => $request->input('name')]);
 
         return response()->json([
-            'status' => 201,
+            'status' => 200,
             'message' => 'Data has been created successfully',
+            'data'=> [],
         ]);
     }
 
@@ -30,8 +31,9 @@ trait CrudTrait
         $data->update(['name' => $request->input('name')]);
 
         return response()->json([
-            'status' => 201,
+            'status' => 200,
             'message' => 'Data has been created successfully',
+            'data'=> [],
         ]);
 
     }
@@ -42,6 +44,7 @@ trait CrudTrait
         return response()->json([
             'status' => 200,
             'message' => 'Data has been deleted successfully',
+            'data'=> [],
         ]);
     }
 }

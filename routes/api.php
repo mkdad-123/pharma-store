@@ -26,6 +26,9 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/register','register');
         Route::post('/logout', 'logout');
         Route::post('/refresh','refresh');
+        Route::post('/resetPassword','resetPassword');
+        Route::get('/check_code/{code}','checkCodeResetPassword');
+        Route::post('/update_password','updatePassword');
     });
 
     Route::controller(WarehouseAuthController::class)->prefix('warehouse')->group(function () {
@@ -36,6 +39,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('/verification/{code}','verify');
         Route::post('/resetPassword','resetPassword');
         Route::get('/check_code/{code}','checkCodeResetPassword');
+        Route::post('/update_password','updatePassword');
     });
 
     Route::controller(PharmacistAuthController::class)->prefix('pharmacist')->group(function () {
@@ -50,8 +54,10 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::get('/unauthorized', function (){
     return response()->json([
-        'message' => 'unauthorized'
-    ],401);
+        'status' => 401,
+        'message' => 'unauthorized',
+        'data' => []
+    ]);
 })->name('login');
 
 Route::group(['prefix' => 'profile'], function () {
@@ -59,21 +65,21 @@ Route::group(['prefix' => 'profile'], function () {
     Route::controller(AdminProfileController::class)->prefix('admin')
         ->middleware('auth:admin')->group(function () {
             Route::get('show_profile', 'showProfile');
-            Route::post('show_profile', 'updateProfile');
+            Route::post('update_profile', 'updateProfile');
             Route::post('delete_profile', 'deleteProfile');
         });
 
     Route::controller(WarehouseProfileController::class)->prefix('warehouse')
         ->middleware('auth:warehouse')->group(function () {
             Route::get('show_profile', 'showProfile');
-            Route::post('show_profile', 'updateProfile');
+            Route::post('update_profile', 'updateProfile');
             Route::post('delete_profile', 'deleteProfile');
         });
 
     Route::controller(PharmacistProfileController::class)->prefix('pharmacist')
         ->middleware('auth:pharmacist')->group(function () {
             Route::get('show_profile', 'showProfile');
-            Route::post('show_profile', 'updateProfile');
+            Route::post('update_profile', 'updateProfile');
             Route::post('delete_profile', 'deleteProfile');
         });
 });
@@ -82,10 +88,14 @@ Route::group(['prefix' => 'profile'], function () {
 Route::controller(MedicineController::class)->prefix('medicine')->group(function (){
     Route::get('show_all','showAll');
     Route::get('show_one/{id}','showOne');
-    Route::post('store','store')->middleware('auth:warehouse');
-    Route::get('show','show');
-    Route::post('delete/{id}','delete');
-    Route::post('search','search');
+    Route::get('search_name','searchNames');
+    Route::get('search_category','searchCategories');
+//    Route::post('search','search');
+    Route::middleware('auth:warehouse')->group(function (){
+        Route::post('store','store');
+        Route::post('delete/{id}','delete');
+        Route::get('show_warehouse_medications','showWarehouseMedicines');
+    });
 });
 
 Route::controller(CategoryController::class)->prefix('categories')->group(function (){

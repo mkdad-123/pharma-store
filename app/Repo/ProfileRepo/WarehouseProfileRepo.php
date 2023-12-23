@@ -22,6 +22,7 @@ class WarehouseProfileRepo implements CrudProfileInterface
 
         return  response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $warehouse
         ]);
     }

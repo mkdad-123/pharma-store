@@ -2,12 +2,17 @@
 namespace App\Http\Controllers\AdminControllers;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\ForgetPassword;
+use App\Trait\ForgetPasswordTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
 class AdminAuthController extends Controller
 {
+    use ForgetPasswordTrait;
 
     public function __construct() {
         $this->middleware('auth:admin', ['except' => ['login', 'register']]);
@@ -22,7 +27,11 @@ class AdminAuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
         if (! $token = auth()->guard('admin')->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                'status' => 401,
+                'message' => 'Unauthorized',
+                'data'=> [],
+                ]);
         }
         return $this->createNewToken($token);
     }
@@ -34,19 +43,29 @@ class AdminAuthController extends Controller
             'password' => 'required|confirmed|string|min:6',
         ]);
         if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+            return response()->json([
+                'status'=> 400,
+                'message' => $validator->errors()->toJson(),
+                'data' => [],
+            ]);
         }
         $admin = Admin::create($validator->validated());
+
         return response()->json([
-            'message' => 'User successfully registered',
+            'status'=> 200,
+            'message' => 'successfully registered',
             'admin' => $admin
-        ], 201);
+        ]);
     }
 
 
     public function logout() {
         auth()->guard('admin')->logout();
-        return response()->json(['message' => 'User successfully signed out'],200);
+        return response()->json([
+            'status' => 200,
+            'message' => 'successfully signed out',
+            'data'=> []
+        ]);
     }
 
     public function refresh() {
@@ -56,10 +75,68 @@ class AdminAuthController extends Controller
     protected function createNewToken($token){
 
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60,
-            'admin' => auth()->guard('admin')->user()
+            'status'=> 200,
+            'message' => '',
+            'data' => [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => Auth::factory()->getTTL() * 60,
+                'admin' => auth()->guard('admin')->user()
+            ]
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validator  = Validator::make($request->all(),[
+            'email' => 'required|exists:admins'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'message'=> $validator->errors(),
+                'data' => [],
+            ]);
+
+        }
+        $this->emailUser = $request->email;
+
+        return $this->forgetPassword($request);
+    }
+
+    public function checkCodeResetPassword($code)
+    {
+        return $this->checkCode($code);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+//            'password' => ['required', 'confirmed',
+//                Password::min(8)
+//                    ->mixedCase()
+//                    ->numbers()
+//                    ->symbols()],
+            'password' => 'required',
+            'email' => 'required|exists:warehouses'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message'=> $validator->errors(),
+                'data' => [],
+            ]);
+        }
+        $warehouse = Admin::whereEmail($request->email)->first();
+
+        $warehouse->update([
+            'password' => bcrypt($request->password)
+        ]);
+
+        return response()->json([
+            'status' => 201,
+            'message' => 'password has been updated successfully',
+            'data' => [],
         ]);
     }
 }

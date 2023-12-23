@@ -32,16 +32,18 @@ class PharmacistAuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'error' => $validator->errors(),
                 'status' => 422,
-            ],200);
+                'message' => $validator->errors(),
+                'data' => []
+            ]);
         }
 
         if (! $token = auth()->guard('pharmacist')->attempt($validator->validated())) {
             return response()->json([
-                'error' => 'Unauthorized',
                 'status' => 401,
-            ], 200);
+                'error' => 'Unauthorized',
+                'data' => []
+            ]);
         }
 
         return $this->createNewToken($token);
@@ -60,7 +62,8 @@ class PharmacistAuthController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'pharmacist successfully signed out',
-            ],200);
+            'data' => []
+            ]);
     }
 
     public function refresh() {
@@ -74,10 +77,14 @@ class PharmacistAuthController extends Controller
 
         return response()->json([
             'status' => 200,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60,
-            'pharmacist' => auth()->guard('pharmacist')->user(),
-        ],200);
+            'message' => '',
+            'data' => [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => Auth::factory()->getTTL() * 60,
+                'pharmacist' => auth()->guard('pharmacist')->user(),
+            ]
+
+        ]);
     }
 }

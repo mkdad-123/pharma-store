@@ -19,12 +19,13 @@ class WarehouseRegisterRequest extends FormRequest
         return [
             'name' => 'required|string|between:2,100',
             'email' => 'required|string|email|max:100|unique:warehouses',
-            'phone' => 'required||regex:/^09/',
-            'password' => ['required','confirmed',
-                Password::min(8)
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()],
+//            'phone' => 'required||regex:/^09/',
+//            'password' => ['required','confirmed',
+//                Password::min(8)
+//                    ->mixedCase()
+//                    ->numbers()
+//                    ->symbols()],
+            'password' => 'required',
             'location' => 'required|string',
         ];
     }

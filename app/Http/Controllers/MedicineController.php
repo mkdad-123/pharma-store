@@ -18,8 +18,9 @@ class MedicineController extends Controller
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $medicines,
-        ],200);
+        ]);
     }
 
     public function showOne($id)
@@ -29,8 +30,9 @@ class MedicineController extends Controller
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $medicine,
-        ],200);
+        ]);
     }
 
     public function store(MedicineStoreRequest $request)
@@ -38,29 +40,57 @@ class MedicineController extends Controller
         return (new MedicineStoreService)->store($request);
     }
 
-    public function show()
+    public function searchNames()
     {
        $medicine = QueryBuilder::for(Medicine::class)
-            ->allowedFilters((new FilterMedicine)->filter())
+            ->allowedFilters((new FilterMedicine)->filterNames())
            ->with(['category:id,name','company:id,name','warehouse:id,name'])
            ->get()->makeHidden(['category_id','company_id','warehouse_id']);
 
        return response()->json([
            'status' => 200,
+           'message' => '',
            'data' => $medicine
-       ],200);
+       ]);
     }
 
-    public function search(Request $request)
+    public function searchCategories()
     {
-        $query = $request->input('query');
-        $medicine = Medicine::search($query)->get();
+        $medicine = QueryBuilder::for(Medicine::class)
+            ->allowedFilters((new FilterMedicine)->filterCategories())
+            ->with(['category:id,name','company:id,name','warehouse:id,name'])
+            ->get()->makeHidden(['category_id','company_id','warehouse_id']);
 
         return response()->json([
             'status' => 200,
+            'message' => '',
             'data' => $medicine
-        ],200);
+        ]);
     }
+    public function showWarehouseMedicines()
+    {
+        $medicines = Medicine::with(['category:id,name','company:id,name','warehouse:id,name'])
+            ->whereId(auth()->guard('warehouse')->id())
+            ->get()
+            ->makeHidden(['category_id','company_id','warehouse_id']);
+
+        return response()->json([
+            'status' => 200,
+            'message' => '',
+            'data' => $medicines,
+        ]);
+    }
+//    public function search(Request $request)
+//    {
+//        $query = $request->input('query');
+//        $medicine = Medicine::search($query)->get();
+//
+//        return response()->json([
+//            'status' => 200,
+//            'message' => '',
+//            'data' => $medicine
+//        ]);
+//    }
 
 
     public function delete($id)
@@ -70,6 +100,7 @@ class MedicineController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'the medicine has been deleted',
+            'data'=> [],
         ]);
     }
 

@@ -16,17 +16,6 @@ trait SharedProfileTrait
         $this->id = $id;
     }
 
-    protected function password($data)
-    {
-        if(request()->has('password'))
-        {
-            $data['password'] = bcrypt(request()->password);
-            return $data;
-        }
-        $data['password'] = $this->model->password;
-        return $data;
-    }
-
     public function update($request)
     {
         try {
@@ -35,15 +24,14 @@ trait SharedProfileTrait
 
             $data = $request->all();
 
-            $data = $this->password($data);
-
             $this->model->find($this->id)->update($data);
 
             DB::commit();
 
             return  response()->json([
                 'status' => 200,
-                'message' => 'your account has been updated successfully'
+                'message' => 'your account has been updated successfully',
+                'data'=> [],
             ]);
 
         } catch (Exception $e) {
@@ -60,7 +48,8 @@ trait SharedProfileTrait
 
         return  response()->json([
             'status' => 200,
-            'message' => 'your account has been deleted successfully'
+            'message' => 'your account has been deleted successfully',
+            'data'=> [],
         ]);
 
     }
