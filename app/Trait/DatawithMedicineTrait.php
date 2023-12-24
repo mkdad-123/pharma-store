@@ -26,12 +26,12 @@ trait DatawithMedicineTrait
 
     public function showWithMedicines()
     {
-        $medicines = $this->model->with(['medicines' => function($query){
-            $query->select(['category_id','company_id','warehouse_id','id','commercial_name','scientific_name','amount'
-                ,'expiration_date','price','photo','created_at','updated_at']);
-        }, 'medicines.warehouse:id,name',
-            'medicines.category'])
-            ->get(['id','name']);
+        $medicines = $this->model->with([
+            'medicines.category:id,name',
+            'medicines.company:id,name',
+            'medicines.warehouse:id,name',
+            ])->get(['id','name']);
+
         $medicines->each(function ($category) {
             $category->medicines->makeHidden(['category_id', 'company_id', 'warehouse_id']);
         });

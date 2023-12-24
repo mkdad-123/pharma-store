@@ -23,13 +23,21 @@ class WarehouseLoginService
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 400,
+                'status' => 422,
                 'message' => $validator->errors(),
                 'data' => [],
                 ]);
         }
 
         return $validator->validated();
+    }
+
+    protected function isFound($email)
+    {
+        if (!$this->model->where('email', $email)->exists()) {
+            return false;
+        }
+        return true;
     }
 
     protected function isValidData($data)
@@ -47,7 +55,6 @@ class WarehouseLoginService
     protected function isValidStatus($email)
     {
         $warehouse = Warehouse::whereEmail($email)->first();
-
         return $warehouse->status;
     }
 
@@ -78,6 +85,14 @@ class WarehouseLoginService
             DB::beginTransaction();
 
             $data = $this->validation($request);
+
+            if(! $this->isFound($data['email'])){
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Account not found',
+                    'data' => []
+                ]);
+            }
 
             $token = $this->isValidData($data);
 

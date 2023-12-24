@@ -39,8 +39,15 @@ class FavoriteController extends Controller
     public function showMedicine()
     {
         $favorites = Favorite::favoriteMedicines()
-            ->with('medicine')
-            ->get();
+            ->with([
+                'medicine.category:id,name',
+                'medicine.company:id,name',
+                'medicine.warehouse:id,name',
+                ])->get(['id','name']);
+
+        $favorites->each(function ($favorite) {
+            $favorite->medicine->makeHidden(['category_id', 'company_id', 'warehouse_id']);
+        });
 
         return response()->json([
             'status' => 200,
@@ -68,8 +75,15 @@ class FavoriteController extends Controller
         $topMedicines = Favorite::select('medicine_id', DB::raw('COUNT(*) as favorites_count'))
             ->groupBy('medicine_id')
             ->orderByDesc('favorites_count')
-            ->with('medicine:id,commercial_name')
-            ->get();
+            ->with([
+                'medicine.category:id,name',
+                'medicine.company:id,name',
+                'medicine.warehouse:id,name',
+                ])->get(['id','name']);
+
+        $topMedicines->each(function ($favorite) {
+            $favorite->medicine->makeHidden(['category_id', 'company_id', 'warehouse_id']);
+        });
 
         return response()->json([
             'status' => 200,

@@ -13,8 +13,10 @@ class MedicineController extends Controller
 {
     public function showAll()
     {
-        $medicines = Medicine::with(['category:id,name','company:id,name','warehouse:id,name'])->get()
-            ->makeHidden(['category_id','company_id','warehouse_id']);
+        $medicine = Medicine::with(['category:id,name', 'company:id,name', 'warehouse:id,name'])->get()
+            ->makeHidden(['category_id', 'company_id', 'warehouse_id']);
+
+        $medicines = ['medicines' => $medicine];
 
         return response()->json([
             'status' => 200,
@@ -22,16 +24,17 @@ class MedicineController extends Controller
             'data' => $medicines,
         ]);
     }
-
     public function showOne($id)
     {
         $medicine = Medicine::with(['category:id,name','company:id,name','warehouse:id,name'])->find($id)
             ->makeHidden(['category_id','company_id','warehouse_id']);
 
+        $medicines = ['medicines' => $medicine];
+
         return response()->json([
             'status' => 200,
             'message' => '',
-            'data' => $medicine,
+            'data' => $medicines,
         ]);
     }
 
@@ -47,10 +50,12 @@ class MedicineController extends Controller
            ->with(['category:id,name','company:id,name','warehouse:id,name'])
            ->get()->makeHidden(['category_id','company_id','warehouse_id']);
 
+        $medicines = ['medicines' => $medicine];
+
        return response()->json([
            'status' => 200,
            'message' => '',
-           'data' => $medicine
+           'data' => $medicines
        ]);
     }
 
@@ -61,18 +66,22 @@ class MedicineController extends Controller
             ->with(['category:id,name','company:id,name','warehouse:id,name'])
             ->get()->makeHidden(['category_id','company_id','warehouse_id']);
 
+        $medicines = ['medicines' => $medicine];
+
         return response()->json([
             'status' => 200,
             'message' => '',
-            'data' => $medicine
+            'data' => $medicines
         ]);
     }
+
     public function showWarehouseMedicines()
     {
-        $medicines = Medicine::with(['category:id,name','company:id,name','warehouse:id,name'])
+        $medicine = Medicine::with(['category:id,name','company:id,name','warehouse:id,name'])
             ->whereId(auth()->guard('warehouse')->id())
-            ->get()
-            ->makeHidden(['category_id','company_id','warehouse_id']);
+            ->get()->makeHidden(['category_id','company_id','warehouse_id']);
+
+        $medicines = ['medicines' => $medicine];
 
         return response()->json([
             'status' => 200,
@@ -80,6 +89,7 @@ class MedicineController extends Controller
             'data' => $medicines,
         ]);
     }
+
 //    public function search(Request $request)
 //    {
 //        $query = $request->input('query');

@@ -24,7 +24,19 @@ class AdminAuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'status' => 422,
+                'message' => $validator->errors(),
+                'data' => []
+                ]);
+        }
+        $email = $request['email'];
+        if (!Admin::where('email', $email)->exists()) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Account not found',
+                'data' => []
+            ]);
         }
         if (! $token = auth()->guard('admin')->attempt($validator->validated())) {
             return response()->json([
