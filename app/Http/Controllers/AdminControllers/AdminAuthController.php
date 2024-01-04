@@ -27,7 +27,7 @@ class AdminAuthController extends Controller
             return response()->json([
                 'status' => 422,
                 'message' => $validator->errors(),
-                'data' => []
+                'data' => response()
                 ]);
         }
         $email = $request['email'];
@@ -35,14 +35,14 @@ class AdminAuthController extends Controller
             return response()->json([
                 'status' => 404,
                 'message' => 'Account not found',
-                'data' => []
+                'data' => response()
             ]);
         }
         if (! $token = auth()->guard('admin')->attempt($validator->validated())) {
             return response()->json([
                 'status' => 401,
-                'message' => 'Unauthorized',
-                'data'=> [],
+                'message' => 'the password is incorrect',
+                'data'=> response(),
                 ]);
         }
         return $this->createNewToken($token);
@@ -58,7 +58,7 @@ class AdminAuthController extends Controller
             return response()->json([
                 'status'=> 400,
                 'message' => $validator->errors()->toJson(),
-                'data' => [],
+                'data' => response(),
             ]);
         }
         $admin = Admin::create($validator->validated());
@@ -66,7 +66,7 @@ class AdminAuthController extends Controller
         return response()->json([
             'status'=> 200,
             'message' => 'successfully registered',
-            'admin' => $admin
+            'data' => $admin
         ]);
     }
 
@@ -76,7 +76,7 @@ class AdminAuthController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'successfully signed out',
-            'data'=> []
+            'data'=> response()
         ]);
     }
 
@@ -107,7 +107,7 @@ class AdminAuthController extends Controller
             return response()->json([
                 'status' => 400,
                 'message'=> $validator->errors(),
-                'data' => [],
+                'data' => response(),
             ]);
 
         }
@@ -136,7 +136,7 @@ class AdminAuthController extends Controller
             return response()->json([
                 'status' => 400,
                 'message'=> $validator->errors(),
-                'data' => [],
+                'data' => response(),
             ]);
         }
         $warehouse = Admin::whereEmail($request->email)->first();
@@ -148,7 +148,7 @@ class AdminAuthController extends Controller
         return response()->json([
             'status' => 201,
             'message' => 'password has been updated successfully',
-            'data' => [],
+            'data' => response(),
         ]);
     }
 }

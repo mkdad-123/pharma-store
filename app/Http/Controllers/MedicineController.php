@@ -78,7 +78,7 @@ class MedicineController extends Controller
     public function showWarehouseMedicines()
     {
         $medicine = Medicine::with(['category:id,name','company:id,name','warehouse:id,name'])
-            ->whereId(auth()->guard('warehouse')->id())
+            ->whereWarehouseId(auth()->guard('warehouse')->id())
             ->get()->makeHidden(['category_id','company_id','warehouse_id']);
 
         $medicines = ['medicines' => $medicine];
@@ -110,7 +110,7 @@ class MedicineController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'the medicine has been deleted',
-            'data'=> [],
+            'data'=> response(),
         ]);
     }
 

@@ -21,7 +21,7 @@ trait CrudTrait
         return response()->json([
             'status' => 200,
             'message' => 'Data has been created successfully',
-            'data'=> [],
+            'data'=> response(),
         ]);
     }
 
@@ -33,7 +33,7 @@ trait CrudTrait
         return response()->json([
             'status' => 200,
             'message' => 'Data has been created successfully',
-            'data'=> [],
+            'data'=> response(),
         ]);
 
     }
@@ -44,7 +44,7 @@ trait CrudTrait
         return response()->json([
             'status' => 200,
             'message' => 'Data has been deleted successfully',
-            'data'=> [],
+            'data'=> response(),
         ]);
     }
 }

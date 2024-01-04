@@ -6,9 +6,12 @@ use App\Events\NewOrderEvent;
 use App\Models\Medicine;
 use App\Models\Order;
 use App\Models\OrderMedicine;
+use App\Models\Warehouse;
+use App\Notifications\OrderNotification;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class OrderStoreService
 {
@@ -18,6 +21,7 @@ class OrderStoreService
         $order = new Order();
         $order->pharmacist_id = auth()->guard('pharmacist')->id();
         $order->warehouse_id = $warehouseId;
+        $order->total_price = $data->total_price;
         $order->save();
 
         return $order->id;
@@ -48,11 +52,19 @@ class OrderStoreService
 
     protected function sendNotificationOrder($orderId,$warehouseId)
     {
-        $order = Order::with(['orderMedicines','pharmacist:id,name'])
-            ->whereId($orderId)
-            ->get(['id','status','payment']);
+        $order = Order::with([
+            'orderMedicines.medicine.category:id,name',
+            'orderMedicines.medicine.company:id,name',
+            'orderMedicines.medicine.warehouse:id,name',
+            'pharmacist',
+        ])->whereId($orderId)->get();
 
+        // real time notification
         event(new NewOrderEvent($order,$warehouseId));
+
+        // database notification
+        $warehouse = Warehouse::whereId($warehouseId)->get();
+        Notification::send($warehouse, new OrderNotification($warehouse,$order));
     }
 
     public function store($request)
@@ -73,7 +85,7 @@ class OrderStoreService
             return response()->json([
                 'status' => 200,
                 'message' => 'Your order has been registered successfully',
-                'data'=> [],
+                'data'=> response(),
             ]);
 
         }catch (Exception $e) {

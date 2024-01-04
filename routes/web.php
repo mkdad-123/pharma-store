@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderWarehousePdfController;
 use Illuminate\Support\Facades\Route;
 
 /*

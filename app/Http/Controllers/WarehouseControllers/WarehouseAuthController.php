@@ -44,7 +44,7 @@ class WarehouseAuthController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'User successfully signed out',
-            'data'=> [],
+            'data'=> response(),
         ]);
     }
 
@@ -62,7 +62,7 @@ class WarehouseAuthController extends Controller
             return response()->json([
                 'status' => 400,
                 'message'=> $validator->errors(),
-                'data' => [],
+                'data' => response(),
             ]);
         }
         $this->emailUser = $request->email;
@@ -89,7 +89,7 @@ class WarehouseAuthController extends Controller
             return response()->json([
                 'status' => 400,
                 'message'=> $validator->errors(),
-                'data' => [],
+                'data' => response(),
             ]);
         }
         $warehouse = Warehouse::whereEmail($request->email)->first();
@@ -101,7 +101,7 @@ class WarehouseAuthController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'password has been updated successfully',
-            'data'=> [],
+            'data'=> response(),
         ]);
 
     }

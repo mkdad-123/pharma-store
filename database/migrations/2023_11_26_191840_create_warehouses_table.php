@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('warehouses', function (Blueprint $table) {
@@ -18,7 +16,7 @@ return new class extends Migration
             $table->string('phone');
             $table->string('password');
             $table->string('location');
-            $table->boolean('status')->default(0);
+            $table->boolean('status')->default(1);
             $table->string('verification_token')->nullable();
             $table->dateTime('verified')->nullable();
             $table->timestamps();

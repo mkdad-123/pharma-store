@@ -50,14 +50,18 @@ class MedicineStoreService
     {
         $medicine = $request->except('category','company','photo');
 
-        $photo = $request->file('photo')->getClientOriginalName();
-        $path = $request->file('photo')->storeAs('images',$photo,'public');
+        if($request->hasFile('photo')) {
+
+            $photo = $request->file('photo')->getClientOriginalName();
+            $path = $request->file('photo')->storeAs('images', $photo, 'public');
+            $medicine['photo'] = $path;
+        }
 
         $medicine['category_id'] = $categoryId;
         $medicine['company_id'] = $companyId;
         $medicine['price'] = $this->adminPercent($request->price);
         $medicine['warehouse_id'] = auth()->guard('warehouse')->id();
-        $medicine['photo'] = $path;
+
 
         $medicineStored = $this->model->create($medicine);
 
@@ -83,7 +87,7 @@ class MedicineStoreService
                 'status' => 201,
                 'message' => 'Medicine has been created successfully',
                 'your price after discount is ' => $medicine->price,
-            ],200);
+            ]);
 
         }catch (Exception $e){
             DB::rollBack();

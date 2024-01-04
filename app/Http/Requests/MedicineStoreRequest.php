@@ -11,12 +11,12 @@ class MedicineStoreRequest extends FormRequest
         return [
             'commercial_name' => 'required|string|max:255',
             'scientific_name' => 'required|string|max:255',
-            'amount' => 'required|integer|min:0',
+            'amount' => 'required|integer|min:1',
             'expiration_date' => 'required|date',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:1',
             'category' => 'required|string|max:255',
             'company' => 'required|string|max:255',
-            'photo' => 'required|image:jpg,png,jpeg|max:2048',
+            'photo' => 'image:jpg,png,jpeg',
         ];
     }
 

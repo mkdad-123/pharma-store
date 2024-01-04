@@ -31,7 +31,7 @@ trait SharedProfileTrait
             return  response()->json([
                 'status' => 200,
                 'message' => 'your account has been updated successfully',
-                'data'=> [],
+                'data'=> response(),
             ]);
 
         } catch (Exception $e) {
@@ -49,7 +49,7 @@ trait SharedProfileTrait
         return  response()->json([
             'status' => 200,
             'message' => 'your account has been deleted successfully',
-            'data'=> [],
+            'data'=> response(),
         ]);
 
     }

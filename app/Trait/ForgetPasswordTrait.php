@@ -59,7 +59,7 @@ trait ForgetPasswordTrait
             return response()->json([
                 'status' => 200,
                 'message' => 'pleas check your email',
-                'data' => []
+                'data' => response()
             ]);
 
         }catch (Exception $e){
@@ -79,7 +79,7 @@ trait ForgetPasswordTrait
             return response()->json([
                 'status' => 401,
                 'message' => 'the code is not correct',
-                'data'=> [],
+                'data'=> response(),
             ]);
         }
         $data->code = null;
@@ -89,7 +89,7 @@ trait ForgetPasswordTrait
         return response()->json([
             'status' => 200,
             'message' => 'the code is correct ,reset your password',
-            'data'=> []
+            'data'=> response()
         ]);
     }
 }

@@ -47,7 +47,7 @@ Trait SharedRegister
     {
         try {
 
-            $code = bin2hex(random_bytes(4));
+            $code = rand(1000,9999);
 
             $user = $this->model->whereEmail($email)->first();
 
@@ -102,7 +102,7 @@ Trait SharedRegister
             return response()->json([
                 'status' => 200,
                 'message' => 'your account has been created , please check your email',
-                'data' => [],
+                'data' => response(),
             ]);
 
         } catch (Exception $e) {

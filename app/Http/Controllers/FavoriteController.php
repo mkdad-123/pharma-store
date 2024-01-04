@@ -17,7 +17,7 @@ class FavoriteController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'The medicine has been added to your favorites list',
-            'data'=> [],
+            'data'=> response(),
         ]);
 
     }
@@ -32,7 +32,7 @@ class FavoriteController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'The warehouse has been added to your favorites list',
-            'data'=> [],
+            'data'=> response(),
         ]);
     }
 

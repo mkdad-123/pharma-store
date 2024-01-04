@@ -18,7 +18,7 @@ class AdminController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'the status warehouse has been changed',
-            'data'=> [],
+            'data'=> response(),
         ]);
     }
 
@@ -29,7 +29,7 @@ class AdminController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'the warehouse has been deleted',
-            'data'=> [],
+            'data'=> response(),
         ]);
     }
 
@@ -42,7 +42,7 @@ class AdminController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => $validator->errors(),
-                'data'=> [],
+                'data'=> response(),
             ]);
         }
         Company::create(['name' => $request->input('name')]);
@@ -50,7 +50,7 @@ class AdminController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Company has been created successfully',
-            'data'=> [],
+            'data'=> response(),
         ]);
     }
 }

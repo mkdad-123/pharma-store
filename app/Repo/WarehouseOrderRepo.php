@@ -19,7 +19,7 @@ class WarehouseOrderRepo implements CrudRepoInterface
                 'orderMedicines.medicine.category:id,name',
                 'orderMedicines.medicine.company:id,name',
                 'orderMedicines.medicine.warehouse:id,name',
-                'warehouse'
+                'pharmacist',
             ])->where('warehouse_id',$warehouseId)
             ->get();
 
@@ -42,7 +42,7 @@ class WarehouseOrderRepo implements CrudRepoInterface
             'orderMedicines.medicine.category:id,name',
             'orderMedicines.medicine.company:id,name',
             'orderMedicines.medicine.warehouse:id,name',
-            'warehouse'])->find($id);
+            'pharmacist'])->find($id);
 
         $order->each(function ($order) {
             $order->orderMedicines->each(function ($orderMedicines) {

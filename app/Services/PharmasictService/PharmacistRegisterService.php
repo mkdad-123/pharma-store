@@ -5,7 +5,7 @@ namespace App\Services\PharmasictService;
 use App\Models\Pharmacist;
 use App\Trait\SharedRegister;
 
-class ParmasictRegisterService
+class PharmacistRegisterService
 {
     use SharedRegister;
 

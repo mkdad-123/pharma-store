@@ -25,7 +25,7 @@ class WarehouseLoginService
             return response()->json([
                 'status' => 422,
                 'message' => $validator->errors(),
-                'data' => [],
+                'data' => response(),
                 ]);
         }
 
@@ -46,7 +46,7 @@ class WarehouseLoginService
             return response()->json([
                 'status' => 401,
                 'message' => 'Unauthorized',
-                'data' => []
+                'data' => response()
                 ]);
         }
         return $token;
@@ -68,13 +68,12 @@ class WarehouseLoginService
         return response()->json([
             'status' => 200,
             'message' => '',
-            'data' => [
+            'data' =>[
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => Auth::factory()->getTTL() * 60,
                 'warehouse' => auth()->guard('warehouse')->user()
             ]
-
         ]);
     }
 
@@ -90,18 +89,23 @@ class WarehouseLoginService
                 return response()->json([
                     'status' => 404,
                     'message' => 'Account not found',
-                    'data' => []
+                    'data' => response()
                 ]);
             }
-
-            $token = $this->isValidData($data);
+            if (! $token = auth()->guard('warehouse')->attempt($data)) {
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'the password is incorrect',
+                    'data' => response()
+                ]);
+            }
 
             if($this->isVerified($data['email']) == null){
 
                 return response()->json([
                     'status' => 400,
                     'message' => 'Your account is not verified',
-                    'data' => []
+                    'data' => response()
                 ]);
 
             }
@@ -110,7 +114,7 @@ class WarehouseLoginService
                 return response()->json([
                     'status' => 400,
                     'message' => 'Your account is pending',
-                    'data' => []
+                    'data' => response()
                 ]);
 
             }

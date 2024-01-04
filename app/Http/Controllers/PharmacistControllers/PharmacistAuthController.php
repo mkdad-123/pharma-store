@@ -5,7 +5,7 @@ namespace App\Http\Controllers\PharmacistControllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PharmacistRegisterRequest;
 use App\Models\Pharmacist;
-use App\Services\PharmasictService\ParmasictRegisterService;
+use App\Services\PharmasictService\PharmacistRegisterService;
 use App\Trait\VerificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +34,7 @@ class PharmacistAuthController extends Controller
             return response()->json([
                 'status' => 422,
                 'message' => $validator->errors(),
-                'data' => []
+                'data' => response()
             ]);
         }
 
@@ -42,8 +42,20 @@ class PharmacistAuthController extends Controller
             return response()->json([
                 'status' => 401,
                 'error' => 'Unauthorized',
-                'data' => []
+                'data' => response()
             ]);
+        }
+
+        $pharmacist = Pharmacist::whereEmail($request->email)->first();
+
+        if($pharmacist->verified == null)
+        {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Your account is not verified',
+                'data' => response()
+            ]);
+
         }
 
         return $this->createNewToken($token);
@@ -51,7 +63,7 @@ class PharmacistAuthController extends Controller
 
     public function register(PharmacistRegisterRequest $request)
     {
-        return (new ParmasictRegisterService())->register($request);
+        return (new PharmacistRegisterService())->register($request);
     }
 
 
@@ -62,7 +74,7 @@ class PharmacistAuthController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'pharmacist successfully signed out',
-            'data' => []
+            'data' => response()
             ]);
     }
 
@@ -72,8 +84,6 @@ class PharmacistAuthController extends Controller
     }
 
     protected function createNewToken($token){
-
-        Auth::factory()->setTTL(360);
 
         return response()->json([
             'status' => 200,

@@ -7,7 +7,9 @@ use App\Http\Controllers\{AdminControllers\AdminAuthController,
     CompanyController,
     FavoriteController,
     MedicineController,
+    OrderNotificationController,
     OrderStatusController,
+    OrderWarehousePdfController,
     PharmacistControllers\PharmacistAuthController,
     PharmacistControllers\PharmacistOrderController,
     PharmacistControllers\PharmacistProfileController,
@@ -157,4 +159,16 @@ Route::controller(AdminController::class)->prefix('admin')
     Route::post('store_company','addCompany');
 });
 
+Route::controller(OrderNotificationController::class)
+    ->middleware('auth:warehouse')
+    ->prefix('warehouse/notification')->group(function (){
+        Route::get('/show_all' , 'index');
+        Route::get('/unread' , 'unread');
+        Route::post('/put_mark_All' , 'markReadAll');
+        Route::post('/put_mark/{id}' , 'markRead');
+        Route::post('/delete_All' , 'deleteAll');
+        Route::delete('/delete_One/{id}' , 'delete');
+    });
+
+Route::post('warehouse/viewPDF',[OrderWarehousePdfController::class,'viewPDF'])->middleware('auth:warehouse');
 

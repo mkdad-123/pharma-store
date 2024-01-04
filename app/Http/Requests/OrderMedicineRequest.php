@@ -20,6 +20,7 @@ class OrderMedicineRequest extends FormRequest
             'medicines.*.medicine_id' => 'required|integer|exists:medicines,id',
             'medicines.*.quantity' => 'required|integer|min:5',
             'warehouse_id' => 'required|integer|exists:warehouses,id',
+            'total_price' => 'required|numeric'
         ];
     }
 }
