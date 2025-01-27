@@ -2,9 +2,7 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -14,20 +12,18 @@ class ChangeOrderStatusEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $orderStatus;
+    protected $orderStatus,$phamacistId;
 
-    protected $pharmacist_id;
-
-    public function __construct($orderStatus,$pharmacist_id)
+    public function __construct($orderStatus,$phamacistId)
     {
         $this->orderStatus = $orderStatus;
-        $this->pharmacist_id = $pharmacist_id;
+        $this->phamacistId = $phamacistId;
     }
 
 
-    public function broadcastOn(): Channel
+    public function broadcastOn()
     {
-        return new Channel('private-order-status.'.$this->pharmacist_id);
+        return new PrivateChannel('private-order-status.'.$this->phamacistId);
     }
 
     public function broadcastWith()

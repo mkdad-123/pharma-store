@@ -5,8 +5,8 @@ namespace App\Providers;
 use App\Http\Controllers\PharmacistControllers\PharmacistOrderController;
 use App\Http\Controllers\WarehouseControllers\WarehouseOrderController;
 use App\Interfaces\CrudRepoInterface;
-use App\Repo\PharmacistOrderRepo;
-use App\Repo\WarehouseOrderRepo;
+use App\Reposetries\PharmacistOrderRepo;
+use App\Reposetries\WarehouseOrderRepo;
 use Illuminate\Support\ServiceProvider;
 
 class CrudRepoProvider extends ServiceProvider

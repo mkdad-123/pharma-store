@@ -22,9 +22,14 @@ class OrderMedicine extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function category()
+    {
+        return $this->hasOneThrough(Category::class,Medicine::class);
+    }
+
     public function scopeCheck($query)
     {
-        $clientId = auth()->guard('pharmacist')->id();
+        $clientId = auth('pharmacist')->id();
 
         return $query->where('pharmacist_id',$clientId);
     }

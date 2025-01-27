@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\ChangeOrderStatusEvent;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Pusher\Pusher;
+
 
 class EventServiceProvider extends ServiceProvider
 {

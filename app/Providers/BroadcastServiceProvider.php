@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Broadcasting\OrderStatusChannel;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,8 +13,6 @@ class BroadcastServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Broadcast::routes();
-
-        require base_path('routes/channels.php');
+        Broadcast::channel('private-order-status.{pharmacistId}',OrderStatusChannel::class);
     }
 }

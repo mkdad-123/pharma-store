@@ -2,12 +2,9 @@
 namespace App\Http\Controllers\AdminControllers;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
-use App\Models\ForgetPassword;
 use App\Trait\ForgetPasswordTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
 class AdminAuthController extends Controller

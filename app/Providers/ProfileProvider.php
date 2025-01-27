@@ -6,9 +6,9 @@ use App\Http\Controllers\AdminControllers\AdminProfileController;
 use App\Http\Controllers\PharmacistControllers\PharmacistProfileController;
 use App\Http\Controllers\WarehouseControllers\WarehouseProfileController;
 use App\Interfaces\CrudProfileInterface;
-use App\Repo\ProfileRepo\AdminProfileRepo;
-use App\Repo\ProfileRepo\PharmacistProfileRepo;
-use App\Repo\ProfileRepo\WarehouseProfileRepo;
+use App\Reposetries\ProfileRepo\AdminProfileRepo;
+use App\Reposetries\ProfileRepo\PharmacistProfileRepo;
+use App\Reposetries\ProfileRepo\WarehouseProfileRepo;
 use Illuminate\Support\ServiceProvider;
 
 class ProfileProvider extends ServiceProvider

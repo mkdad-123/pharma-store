@@ -14,19 +14,8 @@ class OrderWarehousePdfController extends Controller
          $warehouse = auth()->guard('warehouse')->user();
 
 
-         $orders = Order::whereBetween('created_at',[$request->fromDate,$request->toDate])
-             ->with([
-             'orderMedicines.medicine.category:id,name',
-             'orderMedicines.medicine.company:id,name',
-             'orderMedicines.medicine.warehouse:id,name',
-             'pharmacist',
-         ])->whereWarehouseId($warehouse->id)->get();
-
-         $orders->each(function ($order) {
-             $order->orderMedicines->each(function ($orderMedicines) {
-                 $orderMedicines->medicine->makeHidden(['category_id', 'company_id', 'warehouse_id']);
-             });
-         });
+         $orders = getOrderWithPharmacist()->whereBetween('created_at',[$request->fromDate,$request->toDate])
+             ->whereWarehouseId($warehouse->id)->get();
 
          $pdf = PDF::loadView('pdf.reportWarehouse',
              array('orders' =>  $orders, 'warehouse' => $warehouse)

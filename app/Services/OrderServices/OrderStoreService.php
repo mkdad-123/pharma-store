@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderMedicine;
 use App\Models\Warehouse;
 use App\Notifications\OrderNotification;
+use App\ResponseManger\OperationResult;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,13 @@ use Illuminate\Support\Facades\Notification;
 
 class OrderStoreService
 {
+    protected OperationResult $result;
+
+    public function __construct()
+    {
+        $this->result = new OperationResult();
+    }
+
     protected function storeOrder($data)
     {
         $warehouseId = $data->input('warehouse_id');
@@ -52,17 +60,13 @@ class OrderStoreService
 
     protected function sendNotificationOrder($orderId,$warehouseId)
     {
-        $order = Order::with([
-            'orderMedicines.medicine.category:id,name',
-            'orderMedicines.medicine.company:id,name',
-            'orderMedicines.medicine.warehouse:id,name',
-            'pharmacist',
-        ])->whereId($orderId)->get();
+        $order = getOrderWithPharmacist()
+            ->whereId($orderId)->get();
 
         // real time notification
         event(new NewOrderEvent($order,$warehouseId));
 
-        // database notification
+        // store notification in database
         $warehouse = Warehouse::whereId($warehouseId)->get();
         Notification::send($warehouse, new OrderNotification($warehouse,$order));
     }
@@ -82,16 +86,14 @@ class OrderStoreService
 
             DB::commit();
 
-            return response()->json([
-                'status' => 200,
-                'message' => 'Your order has been registered successfully',
-                'data'=> response(),
-            ]);
+            $this->result->message = 'Your order has been registered successfully';
+            $this->result->data = response();
 
         }catch (Exception $e) {
             DB::rollBack();
-            return response($e->getMessage());
+            $this->result->status = 500;
+            $this->result->message = $e->getMessage();
         }
-
+        return $this->result;
     }
 }

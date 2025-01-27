@@ -1,40 +1,47 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Trait;
 
-use App\Models\Warehouse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class OrderNotificationController extends Controller
+trait NotificationTrait
 {
+    protected $model;
+    protected $id;
+
+    protected function setModel($model,$id): void
+    {
+        $this->model = $model;
+        $this->id = $id;
+    }
+
     public function index()
     {
-        $warehouse = Warehouse::find(auth()->guard('warehouse')->id());
+        $user = $this->model->find($this->id);
 
         return response()->json([
             'status' => 200,
             'message' => 'all notifications',
-            'data'=>$warehouse->notifications
+            'data'=> $user->notifications
         ]);
     }
 
     public function unread()
     {
-        $warehouse = Warehouse::find(auth()->guard('warehouse')->id());
+        $user = $this->model->find($this->id);
 
         return response()->json([
             'status' => 200,
             'message' => 'Unread notifications',
-            'data'=>$warehouse->unreadNotifications
+            'data'=> $user->unreadNotifications
         ]);
     }
 
     public function markReadAll()
     {
-        $warehouse = Warehouse::find(auth()->guard('warehouse')->id());
+        $user = $this->model->find($this->id);
 
-        $warehouse->unreadNotifications()->update(['read_at' => now()]);
+        $user->unreadNotifications()->update(['read_at' => now()]);
 
         return response()->json([
             'status' => 200,
@@ -56,9 +63,9 @@ class OrderNotificationController extends Controller
 
     public function deleteAll()
     {
-        $warehouse = Warehouse::find(auth()->guard('warehouse')->id());
+        $user = $this->model->find($this->id);
 
-        $warehouse->notifications()->delete();
+        $user->notifications()->delete();
 
         return response()->json([
             'status' => 200,

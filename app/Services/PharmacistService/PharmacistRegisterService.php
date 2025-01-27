@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services\PharmasictService;
+namespace App\Services\PharmacistService;
 
 use App\Models\Pharmacist;
+use App\ResponseManger\OperationResult;
 use App\Trait\SharedRegister;
 
 class PharmacistRegisterService
@@ -11,7 +12,9 @@ class PharmacistRegisterService
 
     public function __construct()
     {
-        $this->setModel(new Pharmacist());
+        $this->model = new Pharmacist();
+
+        $this->result = new OperationResult();
     }
 
 }

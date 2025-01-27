@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\PharmacistControllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PharmacistLoginRequest;
 use App\Http\Requests\PharmacistRegisterRequest;
+use App\Http\Requests\UpdatePasswordRequest;
 use App\Models\Pharmacist;
-use App\Services\PharmasictService\PharmacistRegisterService;
+use App\Services\PharmacistService\PharmacistLoginService;
+use App\Services\PharmacistService\PharmacistRegisterService;
+use App\Trait\ForgetPasswordTrait;
 use App\Trait\VerificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,57 +17,42 @@ use Illuminate\Support\Facades\Validator;
 
 class PharmacistAuthController extends Controller
 {
-    use VerificationTrait;
+    use VerificationTrait , ForgetPasswordTrait;
 
     public function __construct() {
 
-        $this->middleware('auth:pharmacist', ['except' => ['login', 'register','verify']]);
+        $this->middleware('auth:pharmacist', ['only' => ['logout','refresh']]);
 
         $this->setModel(new Pharmacist());
     }
 
-    public function login(Request $request){
+    public function login(PharmacistLoginRequest $request)
+    {
+        $result = (new PharmacistLoginService())->login($request);
 
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'phone' => 'required|max:17',
-            'password' => 'required|string',
-        ]);
+        if($result->status == 200){
 
-        if ($validator->fails()) {
+            return $this->createNewToken($result->data);
+
+        } else {
             return response()->json([
-                'status' => 422,
-                'message' => $validator->errors(),
-                'data' => response()
+                'status' => $result->status,
+                'message' => $result->message,
+                'data'=> $result->data,
             ]);
         }
 
-        if (! $token = auth()->guard('pharmacist')->attempt($validator->validated())) {
-            return response()->json([
-                'status' => 401,
-                'error' => 'Unauthorized',
-                'data' => response()
-            ]);
-        }
-
-        $pharmacist = Pharmacist::whereEmail($request->email)->first();
-
-        if($pharmacist->verified == null)
-        {
-            return response()->json([
-                'status' => 400,
-                'message' => 'Your account is not verified',
-                'data' => response()
-            ]);
-
-        }
-
-        return $this->createNewToken($token);
     }
 
     public function register(PharmacistRegisterRequest $request)
     {
-        return (new PharmacistRegisterService())->register($request);
+        $result = (new PharmacistRegisterService())->register($request);
+
+        return response()->json([
+            'status' => $result->status,
+            'message' => $result->message,
+            'data' => $result->data
+        ]);
     }
 
 
@@ -92,9 +81,44 @@ class PharmacistAuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => Auth::factory()->getTTL() * 60,
-                'pharmacist' => auth()->guard('pharmacist')->user(),
             ]
-
         ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validator  = Validator::make($request->all(),[
+            'email' => 'required|exists:warehouses'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'message'=> $validator->errors(),
+                'data' => response(),
+            ]);
+        }
+
+        return $this->forgetPassword($request);
+    }
+
+    public function checkCodeResetPassword($code)
+    {
+        return $this->checkCode($code);
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request)
+    {
+        $pharmacist = Pharmacist::whereEmail($request->email)->first();
+
+        $pharmacist->update([
+            'password' => bcrypt($request->password)
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'password has been updated successfully',
+            'data'=> response(),
+        ]);
+
     }
 }

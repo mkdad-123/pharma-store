@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class WarehouseLoginRequest extends FormRequest
+class PharmacistLoginRequest extends FormRequest
 {
 
     public function authorize(): bool
@@ -15,7 +15,8 @@ class WarehouseLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required|string|email',
+            'phone' => 'required|max:17',
             'password' => 'required|string',
         ];
     }

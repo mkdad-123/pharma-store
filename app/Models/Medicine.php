@@ -9,8 +9,8 @@ use Laravel\Scout\Searchable;
 
 class Medicine extends Model
 {
-    use HasFactory  ;
-    //use Searchable;
+    use HasFactory ;
+        //Searchable ;
 
     protected $guarded = [];
 
@@ -34,11 +34,19 @@ class Medicine extends Model
         return $this->belongsTo(Favorite::class);
     }
 
-//    public function toSearchableArray()
+
+//    public function toSearchableArray(): array
 //    {
 //        return [
+//            'id' => $this->id, // <- Always include the primary key
 //            'commercial_name' => $this->commercial_name,
-//            'scientific_name'=>$this->scientific_name,
+//            'category' => $this->category(),
 //        ];
 //    }
+
+    protected $hidden = [
+        'category_id',
+        'company_id',
+        'warehouse_id'
+    ];
 }

@@ -5,6 +5,7 @@ namespace App\Trait;
 use App\Events\WarehouseRegisterEvent;
 use App\Mail\SendEmailVerification;
 use App\Models\Warehouse;
+use App\ResponseManger\OperationResult;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -15,10 +16,7 @@ Trait SharedRegister
 {
     protected $model;
 
-    protected function setModel($model): void
-    {
-        $this->model = $model;
-    }
+    protected OperationResult $result;
 
     protected function validation($request)
     {
@@ -99,16 +97,15 @@ Trait SharedRegister
 
             DB::commit();
 
-            return response()->json([
-                'status' => 200,
-                'message' => 'your account has been created , please check your email',
-                'data' => response(),
-            ]);
+            $this->result->message = 'your account has been created,please check your email';
+            $this->result->data = response();
 
         } catch (Exception $e) {
 
             DB::rollBack();
-            return response($e->getMessage());
+            $this->result->status = 500;
+            $this->result->message = $e->getMessage();
         }
+        return $this->result;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services\MedicineService;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Medicine;
+use App\ResponseManger\OperationResult;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -12,9 +13,12 @@ class MedicineStoreService
 {
     protected Medicine $model;
 
+    protected OperationResult $result;
+
     public function __construct()
     {
         $this->model = new Medicine();
+        $this->result = new OperationResult();
     }
 
     protected function adminPercent($price): float
@@ -28,10 +32,11 @@ class MedicineStoreService
         $category =  Category::whereName($categoryName)->first();
 
         if(! $category){
-            return response()->json([
-                'status' => 400,
-                'message' => 'Category is not found'
-            ]);
+            $this->result->status = 400;
+            $this->result->message = 'Category is not found';
+            $this->result->data = response();
+
+            return $category;
         }
         return $category->id;
     }
@@ -75,7 +80,9 @@ class MedicineStoreService
         try {
             DB::beginTransaction();
 
-            $categoryId = $this->storeCategory($request->category);
+            if(! $categoryId = $this->storeCategory($request->category)){
+                return $this->result;
+            }
 
             $companyId = $this->storeCompany($request->company);
 
@@ -83,18 +90,17 @@ class MedicineStoreService
 
             DB::commit();
 
-            return response()->json([
-                'status' => 201,
-                'message' => 'Medicine has been created successfully',
-                'your price after discount is ' => $medicine->price,
-            ]);
+            $this->result->status = 201;
+            $this->result->message = 'Medicine has been created successfully,
+                                      your price after discount is '.$medicine->price;
+            $this->result->data = response();
 
         }catch (Exception $e){
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()],400);
         }
 
-
+        return $this->result;
     }
 
 }

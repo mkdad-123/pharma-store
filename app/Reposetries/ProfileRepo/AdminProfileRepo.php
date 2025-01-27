@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repo\ProfileRepo;
+namespace App\Reposetries\ProfileRepo;
 
 use App\Interfaces\CrudProfileInterface;
 use App\Models\Admin;

@@ -28,6 +28,7 @@ class PharmacistOrderController extends Controller
     public function addOrder(OrderMedicineRequest $request)
     {
         return $this->crudRepo->store($request);
+            //\DB::getQueryLog();
     }
 
 }

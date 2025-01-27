@@ -2,8 +2,6 @@
 
 namespace App\Trait;
 
-use App\Models\Category;
-
 trait DatawithMedicineTrait
 {
     protected $model;

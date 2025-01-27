@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\AdminControllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CategoryRequest;
-use App\Models\Category;
 use App\Models\Company;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;

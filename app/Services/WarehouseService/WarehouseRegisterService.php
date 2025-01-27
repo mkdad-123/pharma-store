@@ -3,6 +3,7 @@
 namespace App\Services\WarehouseService;
 
 use App\Models\Warehouse;
+use App\ResponseManger\OperationResult;
 use App\Trait\SharedRegister;
 
 class WarehouseRegisterService
@@ -11,7 +12,9 @@ class WarehouseRegisterService
 
     public function __construct()
     {
-        $this->setModel(new Warehouse());
+        $this->model = new Warehouse();
+
+        $this->result = new OperationResult();
     }
 
 }

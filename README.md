@@ -1,66 +1,170 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Pharma Store – Pharmacy Management System
 
-## About Laravel
+Pharma Store is a **multi-user pharmacy management system** designed to simplify the process of ordering medicines and managing pharmacy operations. The system supports medicine ordering, inventory management, user role management, and order tracking.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Medicine Ordering**: Easily order medicines from the pharmacy.
+- **Inventory Management**: Track and manage medicine stock levels.
+- **User Role Management**: Assign roles to users and control their permissions.
+- **Order Tracking**: Monitor the status of orders in real-time.
+- **Real-Time Notifications**: Receive instant updates using Pusher.
+- **Reporting & Analytics**: Generate reports for sales, inventory, and orders.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Technologies
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Backend**: Laravel, PHP, MVC.
+- **Frontend**: Blade, HTML, CSS, JavaScript.
+- **Database**: MySQL.
+- **APIs**: RESTful APIs for seamless integration.
+- **Tools**: Git, GitHub, Postman, Pusher.
+- **Techniques**: OOP, Design Patterns (Service Layer, Repository, Dependency Injection).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Packages Used
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+This project uses the following Laravel packages:
 
-### Premium Partners
+- **barryvdh/laravel-dompdf**: For generating PDFs.
+- **guzzlehttp/guzzle**: For making HTTP requests.
+- **laravel/sanctum**: For API authentication.
+- **laravel/scout**: For full-text search.
+- **laravel/socialite**: For social media authentication.
+- **pusher/pusher-php-server**: For real-time notifications.
+- **spatie/laravel-query-builder**: For building complex queries.
+- **stripe/stripe-php**: For payment processing.
+- **tymon/jwt-auth**: For JWT authentication.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
+
+## How to Run the Project
+
+### Prerequisites
+
+Before running the project, ensure you have the following installed:
+- PHP (>= 8.2)
+- Composer
+- MySQL
+- Git
+- Node.js (optional, if using frontend assets)
+
+### Installation Steps
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/mkdad-123/pharma-store.git
+   cd pharma-store
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   composer install
+   ```
+
+3. **Set up the `.env` file**:
+    - Copy the `.env.example` file to `.env`:
+      ```bash
+      cp .env.example .env
+      ```
+    - Update the `.env` file with your database credentials:
+      ```plaintext
+      DB_DATABASE=your_database_name
+      DB_USERNAME=your_database_user
+      DB_PASSWORD=your_database_password
+      ```
+
+4. **Generate an application key**:
+   ```bash
+   php artisan key:generate
+   ```
+
+5. **Set up JWT Secret**:
+   If you're using JWT for authentication, generate the JWT secret key:
+   ```bash
+   php artisan jwt:secret
+   ```
+
+6. **Set up Pusher**:
+    - Obtain your Pusher credentials from the [Pusher Dashboard](https://dashboard.pusher.com/).
+    - Update the `.env` file with your Pusher credentials:
+      ```plaintext
+      PUSHER_APP_ID=your-pusher-app-id
+      PUSHER_APP_KEY=your-pusher-app-key
+      PUSHER_APP_SECRET=your-pusher-app-secret
+      PUSHER_APP_CLUSTER=your-pusher-app-cluster
+      ```
+
+7. **Run migrations and seed the database**:
+   ```bash
+   php artisan migrate --seed
+   ```
+
+8. **Start the development server**:
+   ```bash
+   php artisan serve
+   ```
+
+9. **Access the application**:
+   Open your browser and navigate to `http://localhost:8000`.
+
+---
+
+## Additional Package Setup
+
+This project uses several Laravel packages that may require additional setup. Below are the instructions for each package:
+
+### 1. **Laravel DomPDF (barryvdh/laravel-dompdf)**
+- No additional setup is required. Ensure you have the `dompdf/dompdf` dependency installed.
+
+### 2. **Laravel Sanctum (laravel/sanctum)**
+- No additional setup is required.
+
+### 3. **Laravel Scout (laravel/scout)**
+- Configure your search driver in the `.env` file:
+  ```plaintext
+  SCOUT_DRIVER=database 
+  ```
+
+### 4. **Laravel Socialite (laravel/socialite)**
+- Configure your social media keys in the `.env` file if using social login.
+
+### 5. **Stripe (stripe/stripe-php)**
+- Obtain your Stripe keys from the [Stripe Dashboard](https://dashboard.stripe.com/).
+- Update the `.env` file with your Stripe credentials:
+  ```plaintext
+  STRIPE_KEY=your-stripe-key
+  STRIPE_SECRET=your-stripe-secret
+  ```
+
+---
+
+## Documentation
+
+For detailed documentation, including the **Software Requirements Specification (SRS)**, please refer to the [Documentation Folder](/docs).
+
+---
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+If you'd like to contribute to this project, please follow these steps:
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/YourFeatureName`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/YourFeatureName`).
+5. Open a pull request.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
+## Contact
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+If you have any questions or feedback, feel free to reach out:
+- **Email**: makdad.taleb@gmail.com
+- **GitHub**: [mkdad-123](https://github.com/mkdad-123)
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

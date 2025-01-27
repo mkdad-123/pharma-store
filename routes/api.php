@@ -4,15 +4,17 @@ use App\Http\Controllers\{AdminControllers\AdminAuthController,
     AdminControllers\AdminController,
     AdminControllers\AdminProfileController,
     CategoryController,
+    OrderStatusNotificationController,
     CompanyController,
     FavoriteController,
     MedicineController,
-    OrderNotificationController,
     OrderStatusController,
     OrderWarehousePdfController,
+    PaymentController,
     PharmacistControllers\PharmacistAuthController,
     PharmacistControllers\PharmacistOrderController,
     PharmacistControllers\PharmacistProfileController,
+    WarehouseControllers\OrderNotificationController,
     WarehouseControllers\WarehouseAuthController,
     WarehouseControllers\WarehouseController,
     WarehouseControllers\WarehouseOrderController,
@@ -28,9 +30,6 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/register','register');
         Route::post('/logout', 'logout');
         Route::post('/refresh','refresh');
-        Route::post('/resetPassword','resetPassword');
-        Route::get('/check_code/{code}','checkCodeResetPassword');
-        Route::post('/update_password','updatePassword');
     });
 
     Route::controller(WarehouseAuthController::class)->prefix('warehouse')->group(function () {
@@ -50,6 +49,9 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/logout', 'logout');
         Route::post('/refresh','refresh');
         Route::get('/verification/{code}','verify');
+        Route::post('/resetPassword','resetPassword');
+        Route::get('/check_code/{code}','checkCodeResetPassword');
+        Route::post('/update_password','updatePassword');
     });
 
 });
@@ -58,7 +60,7 @@ Route::get('/unauthorized', function (){
     return response()->json([
         'status' => 401,
         'message' => 'unauthorized',
-        'data' => []
+        'data' => response()
     ]);
 })->name('login');
 
@@ -92,7 +94,7 @@ Route::controller(MedicineController::class)->prefix('medicine')->group(function
     Route::get('show_one/{id}','showOne');
     Route::get('search_name','searchNames');
     Route::get('search_category','searchCategories');
-//    Route::post('search','search');
+    Route::post('search','search');
     Route::middleware('auth:warehouse')->group(function (){
         Route::post('store','store');
         Route::post('delete/{id}','delete');
@@ -170,5 +172,17 @@ Route::controller(OrderNotificationController::class)
         Route::delete('/delete_One/{id}' , 'delete');
     });
 
+Route::controller(OrderStatusNotificationController::class)
+    ->middleware('auth:pharmacist')
+    ->prefix('pharmacist/notification')->group(function (){
+        Route::get('/show_all' , 'index');
+        Route::get('/unread' , 'unread');
+        Route::post('/put_mark_All' , 'markReadAll');
+        Route::post('/put_mark/{id}' , 'markRead');
+        Route::post('/delete_All' , 'deleteAll');
+        Route::delete('/delete_One/{id}' , 'delete');
+    });
+
 Route::post('warehouse/viewPDF',[OrderWarehousePdfController::class,'viewPDF'])->middleware('auth:warehouse');
 
+Route::get('pharmacist/pay',[PaymentController::class,'createCharge'])->middleware('auth:pharmacist');

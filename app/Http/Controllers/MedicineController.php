@@ -13,8 +13,7 @@ class MedicineController extends Controller
 {
     public function showAll()
     {
-        $medicine = Medicine::with(['category:id,name', 'company:id,name', 'warehouse:id,name'])->get()
-            ->makeHidden(['category_id', 'company_id', 'warehouse_id']);
+        $medicine = Medicine::with(['category:id,name', 'company:id,name', 'warehouse:id,name'])->get();
 
         $medicines = ['medicines' => $medicine];
 
@@ -26,8 +25,7 @@ class MedicineController extends Controller
     }
     public function showOne($id)
     {
-        $medicine = Medicine::with(['category:id,name','company:id,name','warehouse:id,name'])->find($id)
-            ->makeHidden(['category_id','company_id','warehouse_id']);
+        $medicine = Medicine::with(['category:id,name','company:id,name','warehouse:id,name'])->find($id);
 
         $medicines = ['medicines' => $medicine];
 
@@ -40,7 +38,13 @@ class MedicineController extends Controller
 
     public function store(MedicineStoreRequest $request)
     {
-        return (new MedicineStoreService)->store($request);
+        $result = (new MedicineStoreService)->store($request);
+
+        return response()->json([
+           'status' => $result->status,
+           'message' => $result->message,
+           'data' => $result->data
+        ]);
     }
 
     public function searchNames()
@@ -48,7 +52,7 @@ class MedicineController extends Controller
        $medicine = QueryBuilder::for(Medicine::class)
             ->allowedFilters((new FilterMedicine)->filterNames())
            ->with(['category:id,name','company:id,name','warehouse:id,name'])
-           ->get()->makeHidden(['category_id','company_id','warehouse_id']);
+           ->get();
 
         $medicines = ['medicines' => $medicine];
 
@@ -59,12 +63,13 @@ class MedicineController extends Controller
        ]);
     }
 
+
     public function searchCategories()
     {
         $medicine = QueryBuilder::for(Medicine::class)
             ->allowedFilters((new FilterMedicine)->filterCategories())
             ->with(['category:id,name','company:id,name','warehouse:id,name'])
-            ->get()->makeHidden(['category_id','company_id','warehouse_id']);
+            ->get();
 
         $medicines = ['medicines' => $medicine];
 
@@ -79,7 +84,7 @@ class MedicineController extends Controller
     {
         $medicine = Medicine::with(['category:id,name','company:id,name','warehouse:id,name'])
             ->whereWarehouseId(auth()->guard('warehouse')->id())
-            ->get()->makeHidden(['category_id','company_id','warehouse_id']);
+            ->get();
 
         $medicines = ['medicines' => $medicine];
 
@@ -90,17 +95,17 @@ class MedicineController extends Controller
         ]);
     }
 
-//    public function search(Request $request)
-//    {
-//        $query = $request->input('query');
-//        $medicine = Medicine::search($query)->get();
-//
-//        return response()->json([
-//            'status' => 200,
-//            'message' => '',
-//            'data' => $medicine
-//        ]);
-//    }
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $medicine = Medicine::search($query)->get();
+
+        return response()->json([
+            'status' => 200,
+            'message' => '',
+            'data' => $medicine
+        ]);
+    }
 
 
     public function delete($id)
